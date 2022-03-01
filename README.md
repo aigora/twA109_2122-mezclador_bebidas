@@ -1,4 +1,4 @@
-# [Título del trabajo]
+Mezclador de bebidas
 
 [Descripción breve del proyecto a realizar (2-3 frases).]
 
@@ -6,6 +6,8 @@
 
 [Nombres, apellidos, y usuario GitHub de los integrantes del equipo.]
 
-## Objetivos del trabajo
+Lucía Sánchez-Urán Domínguez, luciasdominguez
+Jorge Sepúlveda Cárcamo, 
+Irene Santalices Acuña, 
 
 [Lista de los objetivos que se persiguen con el trabajo propuesto.]
