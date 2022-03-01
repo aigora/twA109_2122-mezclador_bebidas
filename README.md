@@ -1,7 +1,5 @@
 ## Mezclador de bebidas
 
-[Descripción breve del proyecto a realizar (2-3 frases).]
-
 Nuestro proyecto nace de la búsqueda de simplificación y optimización de un proceso de preparación de bebidas. Por ello, se trata de una máquina dispensadora de bebidas con funcionamiento automático tras realizar una selección manual de la proporción de varios líquidos por parte del usuario. El programa dispensará entonces la mezcla deseada obteniendo el resultado esperado por el consumidor ya sea una bebida o mezcla predeterminada o una construida por el mismo usuario.
 
 ## Integrantes del equipo
