@@ -7,8 +7,8 @@ Nuestro proyecto nace de la búsqueda de simplificación y optimización de un p
 [Nombres, apellidos, y usuario GitHub de los integrantes del equipo.]
 
 - Lucía Sánchez-Urán Domínguez, luciasdominguez
-- Jorge Sepúlveda Cárcamo,      
-- Irene Santalices Acuña,       
+- Jorge Sepúlveda Cárcamo,      irenesantalices
+- Irene Santalices Acuña,       jsepcar
 
 ## Objetivos del trabajo
 
