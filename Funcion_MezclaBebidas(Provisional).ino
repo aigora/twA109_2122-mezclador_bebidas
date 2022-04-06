@@ -24,8 +24,8 @@ void setup() {
 
   //Relés de las valvulas
   pinMode(pinValvulaA, OUTPUT);
-  pinMode(pinValvulaA, OUTPUT);
-  pinMode(pinValvulaA, OUTPUT);
+  pinMode(pinValvulaB, OUTPUT);
+  pinMode(pinValvulaC, OUTPUT);
 
   //Para las primeras pruebas, daremos unos valores fijos a los tiempos
   tiempoA = tiempoB = tiempoC = 10000; //BORRAR MÁS ADELANTE
