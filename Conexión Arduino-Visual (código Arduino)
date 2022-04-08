@@ -88,7 +88,7 @@ void mezclar_bebida(const int pinValvula, unsigned long tiempoValvula) {
 
 void loop() {
   if(Serial.available()>0){
-    String finaldecarrera = Serial.readStringUntil('\n');
+    String mensaje_finaldecarrera = Serial.readStringUntil('\n');
     int FinalCarrera;
     FinalCarrera=digitalRead(pinFinalCarrera);
     if(mensaje_finaldecarrera.compareTo("GET_DETECTA")==0&&FinalCarrera==1){
