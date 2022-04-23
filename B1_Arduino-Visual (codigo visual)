@@ -32,7 +32,7 @@ int menu(void)
 int main(void)
 {
 	Serial* Arduino; //Variable que representa internamente la placa de Arduino
-	char puerto[] = "COM__"; //A qué puerto se conecta Arduino?
+	char puerto[] = "COM3"; //A qué puerto se conecta Arduino?
 	int opcion_menu;
 
 	setlocale(LC_ALL, "ES_es");
@@ -63,8 +63,7 @@ void verifica_finaldecarrera(Serial* Arduino, char* port)
 	if (Arduino->IsConnected())
 	{
 		detecta = leer_finaldecarrera(Arduino);
-		if (detecta != -1)
-			printf("Vaso situado");
+		
 	}
 	else
 	{
@@ -80,7 +79,7 @@ float leer_finaldecarrera(Serial* Arduino)
 	int bytesRecibidos;
 	char mensaje_recibido[MAX_BUFFER];
 
-	bytesRecibidos = Enviar_y_recibir(Arduino, "GET_DETECTA\n", mensaje_recibido);
+	bytesRecibidos = Enviar_y_recibir(Arduino,"GET_DETECTA\n", mensaje_recibido);
 
 	if (bytesRecibidos <= 0)
 	{
@@ -89,7 +88,7 @@ float leer_finaldecarrera(Serial* Arduino)
 	}
 	else
 	{
-		printf("La respuesta contiene %d bytes. Recibido=%s\n", bytesRecibidos, mensaje_recibido);
+		printf("La respuesta contiene %d bytes. Recibido=\n%s", bytesRecibidos, mensaje_recibido);
 
 		detecta = float_from_cadena(mensaje_recibido);
 	}
@@ -110,7 +109,7 @@ int Enviar_y_recibir(Serial* Arduino, const char* mensaje_enviar, char* mensaje_
 
 	while ((bytes_recibidos > 0 || intentos < 5) && fin_linea == 0)
 	{
-		if (bytes_recibidos < 0)
+		if (bytes_recibidos > 0)
 		{
 			total += bytes_recibidos;
 			if (mensaje_recibir[total - 1] == 13 || mensaje_recibir[total - 1] == 10)
@@ -164,3 +163,4 @@ float float_from_cadena(char* cadena)
 		}
 	return numero;
 }
+
