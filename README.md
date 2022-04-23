@@ -5,8 +5,8 @@ Nuestro proyecto nace de la búsqueda de simplificación y optimización de un p
 ## Integrantes del equipo
 
 - Lucía Sánchez-Urán Domínguez, luciasdominguez
-- Jorge Sepúlveda Cárcamo,      irenesantalices
-- Irene Santalices Acuña,       jsepcar
+- Jorge Sepúlveda Cárcamo,      jsepcar
+- Irene Santalices Acuña,       irenesantalices
 
 ## Objetivos del trabajo
 
