@@ -300,10 +300,15 @@ void modificar_bebida(lista* bebida) {
 	}
 	else{
 		printf("Vuelva a introducir los procentajes de la bebida %s", bebida->nombre);
-		bebida->bebida_lista.proporcion.A = bebida_personalizada('A');
-		bebida->bebida_lista.proporcion.B = bebida_personalizada('B');
-		bebida->bebida_lista.proporcion.C = bebida_personalizada('C');
-		scanf_s("%c", &nombre);
+		do {
+			bebida->bebida_lista.proporcion.A = bebida_personalizada('A');
+			bebida->bebida_lista.proporcion.B = bebida_personalizada('B');
+			bebida->bebida_lista.proporcion.C = bebida_personalizada('C');
+			scanf_s("%c", &c);
+			if (bebida->bebida_lista.proporcion.A + bebida->bebida_lista.proporcion.B + bebida->bebida_lista.proporcion.C != 100) {
+				printf("Los porcentajes introducidos no suman 100, vuelva a introducirlos\n");
+			}
+		} while (bebida->bebida_lista.proporcion.A + bebida->bebida_lista.proporcion.B + bebida->bebida_lista.proporcion.C != 100);
 	}
 	return;
 }
