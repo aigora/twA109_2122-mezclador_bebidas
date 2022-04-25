@@ -99,7 +99,7 @@ int main(void) {
 					bebida.proporcion.C = bebida_personalizada('C');
 				}
 				printf("Las porcentajes de su bebida son %d de A, %d de B y %d de C\n", bebida.proporcion.A, bebida.proporcion.B, bebida.proporcion.C);
-				printf("Si desea confirmar introduzca 1. Si pulsa otro botón volverá al manu principal\n");
+				printf("Si desea confirmar introduzca 1. Si pulsa otro botÃ³n volverÃ¡ al manu principal\n");
 				scanf_s("%d", &confirmacion);
 				if (confirmacion == 1) {
 					estado = MEZCLA;
@@ -125,10 +125,10 @@ int main(void) {
 			case 1:
 				resultado = ampliar_lista(&puntero_lista);
 				if (resultado == 0) {
-					printf("Se ha añadido correctamente la bebida");
+					printf("Se ha aÃ±adido correctamente la bebida");
 				}
 				else {
-					printf("No se ha añadido correctamnete la bebida");
+					printf("No se ha aÃ±adido correctamnete la bebida");
 				}
 				break;
 			case 2:
@@ -152,37 +152,37 @@ int main(void) {
 
 int menu_ppal(void) {
 	int opcion;
-	printf("Menú principal\n");
+	printf("MenÃº principal\n");
 	printf("=================\n");
-	printf("Seleccione una opción:\n");
+	printf("Seleccione una opciÃ³n:\n");
 	printf("1- Bebida A\n");
 	printf("2- Bebida B\n");
 	printf("3- Bebida C\n");
 	printf("4- Bebida mezclada\n");
-	printf("5- Menú de lista\n");
+	printf("5- MenÃº de lista\n");
 	printf("6- Salir del programa\n");
 	scanf_s("%d", &opcion);
 	while (opcion < 1 || opcion>6) {
-		printf("La opción elegida no es válida. Seleccione una de las opciones.\n");
+		printf("La opciÃ³n elegida no es vÃ¡lida. Seleccione una de las opciones.\n");
 		scanf_s("%d", &opcion);
 	}
-	printf("Ha elegido la opción %d\n", opcion);
+	printf("Ha elegido la opciÃ³n %d\n", opcion);
 	return opcion;
 }
 
 int menu2(void) {
 	int opcion2;
-	printf("Menú de mezcla\n");
+	printf("MenÃº de mezcla\n");
 	printf("==============\n");
-	printf("Seleccione una opción\n");
+	printf("Seleccione una opciÃ³n\n");
 	printf("1- Mitad de Bebida A y mitad de Bebida B\n");
 	printf("2- Mitad de Bebida B y mitad de Bebida C\n");
 	printf("3- Mitad de Bebida C y mitad de Bebida A\n");
 	printf("4- Bebida personalizada\n");
-	printf("5- Volver al menú principal\n");
+	printf("5- Volver al menÃº principal\n");
 	scanf_s("%d", &opcion2);
 	while (opcion2 < 1 || opcion2 > 5) {
-		printf("La opción elegida no es válida. Seleccione una de las opciones\n");
+		printf("La opciÃ³n elegida no es vÃ¡lida. Seleccione una de las opciones\n");
 		scanf_s("%d", &opcion2);
 	}
 	return opcion2;
@@ -196,18 +196,18 @@ int bebida_personalizada(char letra) {
 }
 int menu_lista() {
 	int opcion_lista;
-	printf("Menú de lista\n");
+	printf("MenÃº de lista\n");
 	printf("==============\n");
-	printf("Seleccione una opción\n");
+	printf("Seleccione una opciÃ³n\n");
 	printf("1- Ampliar lista\n");
 	printf("2- Visualizar lista\n");
 	printf("3- Consultar bebida\n");
 	printf("4- Modificar bebida guardada\n");
 	printf("5- Eliminar bebida de lista\n");
-	printf("6- Volver al menú principal\n");
+	printf("6- Volver al menÃº principal\n");
 	scanf_s("%d", &opcion_lista);
 	while (opcion_lista < 1 || opcion_lista > 6) {
-		printf("La opción elegida no es válida. Seleccione una de las opciones\n");
+		printf("La opciÃ³n elegida no es vÃ¡lida. Seleccione una de las opciones\n");
 		scanf_s("%d", &opcion_lista);
 	}
 	return opcion_lista;
