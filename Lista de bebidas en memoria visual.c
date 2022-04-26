@@ -159,7 +159,7 @@ int menu_ppal(void) {
 	printf("2- Bebida B\n");
 	printf("3- Bebida C\n");
 	printf("4- Bebida mezclada\n");
-	printf("5- Menú de lista\n");
+	printf("5- Bebidas guardadas\n");
 	printf("6- Salir del programa\n");
 	scanf_s("%d", &opcion);
 	while (opcion < 1 || opcion>6) {
