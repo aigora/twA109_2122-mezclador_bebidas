@@ -165,33 +165,6 @@ int bebida_personalizada(char letra) {
 	scanf_s("%d", &porcentaje);
 	return porcentaje;
 }
-int Enviar_y_recibir(Serial* Arduino,char* mensaje_enviar, char* mensaje_recibir)
-{
-	int bytes_recibidos = 0, total = 0;
-	int intentos = 0, fin_linea = 0;
-
-	Arduino->WriteData((char*)mensaje_enviar, strlen(mensaje_enviar));
-	Sleep(PAUSA_MS);
-	bytes_recibidos = Arduino->ReadData(mensaje_recibir, sizeof(char) * MAX_BUFFER - 1);
-
-	while ((bytes_recibidos > 0 || intentos < 5) && fin_linea == 0)
-	{
-		if (bytes_recibidos > 0)
-		{
-			total += bytes_recibidos;
-			if (mensaje_recibir[total - 1] == 13 || mensaje_recibir[total - 1] == 10)
-				fin_linea = 1;
-		}
-		else
-			intentos++;
-		Sleep(PAUSA_MS);
-		bytes_recibidos = Arduino->ReadData(mensaje_recibir + total, sizeof(char) * MAX_BUFFER - 1);
-	}
-	if (total > 0)
-		mensaje_recibir[total - 1] = '\0';
-
-	return total;
-}
 
 //Almacena los tiempos en una cadena de caracteres para enviarsela a arduino
 void encapsular_tiempos(char* mensaje_final, bebidas bebida) {
