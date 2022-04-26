@@ -28,7 +28,7 @@ void setup() {
   pinMode(pinValvulaC, OUTPUT);
 
   //Para las primeras pruebas, daremos unos valores fijos a los tiempos
-  tiempoA = tiempoB = tiempoC = 10000; //BORRAR MÁS ADELANTE
+  tiempoA = tiempoB = tiempoC = 0;
 
   //Emplearemos el monitor en serie para realizar pruebas durante el desarrollo del programa (mostrar errores, estado, o valores de variables)
   Serial.begin(9600);
@@ -83,6 +83,16 @@ void mezclar_bebida(const int pinValvula, unsigned long tiempoValvula) {
     }
   }
   digitalWrite(pinValvula,LOW);
+}
+
+//Necesitamos tambien una funcion que permita obtener los tiempos de la cadena que los contiene
+void extraer_tiempo(String mensaje, unsigned long* tiempo){
+  int i;
+  for(i=0;mensaje[i]!='\0';i++){
+    if(mensaje[i]>='0' && mensaje[i]<='9'){
+      *tiempo = ((*tiempo)*10)+(mensaje[i]-'0');
+    }
+  }
 }
 
 
