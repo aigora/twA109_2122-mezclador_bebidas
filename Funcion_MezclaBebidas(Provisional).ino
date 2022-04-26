@@ -88,22 +88,33 @@ void mezclar_bebida(const int pinValvula, unsigned long tiempoValvula) {
 
 void loop() {
   //Empleando la función definida anteriormente, hacemos funcionar las tres valvulas:
-  if (tiempoA > 0) {
-    Serial.println("Abriendo primera valvula:");
-    mezclar_bebida(pinValvulaA, tiempoA);
-    Serial.println("Fin primera valvula, pasando a la siguiente");
-    tiempoA = 0;
-  }
-  if (tiempoB > 0) {
-    Serial.println("Abriendo segunda valvula:");
-    mezclar_bebida(pinValvulaB, tiempoB);
-    Serial.println("Fin segunda valvula, pasando a la siguiente");
-    tiempoB = 0;
-  }
-  if (tiempoC > 0) {
-    Serial.println("Abriendo tercera valvula:");
-    mezclar_bebida(pinValvulaC, tiempoC);
-    Serial.println("Fin tercera valvula");
-    tiempoC = 0;
+  if (Serial.available ()>0){
+    //Leemos los tiempos
+    String mensaje_ordenador = Serial.readStringUntil('B');
+    extraer_tiempo(mensaje_ordenador, &(tiempoA));
+    mensaje_ordenador = Serial.readStringUntil('C');
+    extraer_tiempo(mensaje_ordenador, &(tiempoB));
+    mensaje_ordenador = Serial.readStringUntil('\n');
+    extraer_tiempo(mensaje_ordenador, &(tiempoC));
+    //Abrimos Valvulas
+    if (tiempoA > 0) {
+      Serial.println("Abriendo primera valvula:");
+      mezclar_bebida(pinValvulaA, tiempoA);
+      Serial.println("Fin primera valvula, pasando a la siguiente");
+      tiempoA = 0;
+    }
+    if (tiempoB > 0) {
+      Serial.println("Abriendo segunda valvula:");
+      mezclar_bebida(pinValvulaB, tiempoB);
+      Serial.println("Fin segunda valvula, pasando a la siguiente");
+      tiempoB = 0;
+    }
+    if (tiempoC > 0) {
+      Serial.println("Abriendo tercera valvula:");
+      mezclar_bebida(pinValvulaC, tiempoC);
+      Serial.println("Fin tercera valvula");
+      tiempoC = 0;
+    }
+    Serial.println("MEZCLA FINALIZADA");
   }
 }
