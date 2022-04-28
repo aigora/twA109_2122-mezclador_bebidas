@@ -19,14 +19,25 @@ typedef struct {
 	unsigned int A, B, C;
 }tiempos;
 
-struct Bebidas {
+typedef struct{
 	proporciones proporcion;
 	tiempos tiempo;
-	struct Bebidas* siguiente;
-};
-typedef struct Bebidas bebidas;
+}bebidas;
 
+struct Lista_de_bebidas{
+	char nombre[TAM];
+	bebidas bebida_lista;
+	struct Lista_de_bebidas* siguiente;
+};
+typedef struct Lista_de_bebidas lista;
 //Funciones prototipo
+int menu_lista(void);
+int ampliar_lista(lista**);
+void mostrar_bebidas(lista); 
+lista* posicion_bebida(lista*, char*);
+void consultar_bebida(lista*);
+void mostrar_lista(lista*);
+void modificar_bebida(lista*);
 int menu_ppal(void);
 int menu2(void);
 int bebida_personalizada(char);
@@ -39,6 +50,7 @@ void mezclar_bebidas(Serial* Arduino, char* port, char* mensaje);
 int main(void) {
 	int opcion, confirmacion;
 	enum estados estado = MENU_PPAL;
+	lista* puntero_lista=NULL;
 	bebidas bebida = {0,0,0,0,0,0,NULL};
 	char mensaje_a_enviar[30]; //Cadena que contiene el mensaje a enviar a la placa de Arduino
 	Serial* Arduino; //Variable que representa internamente la placa de Arduino
@@ -68,6 +80,9 @@ int main(void) {
 				estado = MENU_2;
 				break;
 			case 5:
+				estado = MENU_LISTA;
+				break;
+			case 6:
 				estado = SALIR;
 				break;
 			}
@@ -118,6 +133,33 @@ int main(void) {
 			encapsular_tiempos(mensaje_a_enviar,bebida);
 			mezclar_bebidas(Arduino,puerto,mensaje_a_enviar);
 			estado = MENU_PPAL;
+			break;
+		case MENU_LISTA:
+			opcion = menu_lista();
+			switch (opcion) {
+			case 1:
+				resultado = ampliar_lista(&puntero_lista);
+				if (resultado == 0) {
+					printf("Se ha añadido correctamente la bebida");
+				}
+				else {
+					printf("No se ha añadido correctamnete la bebida");
+				}
+				break;
+			case 2:
+				mostrar_lista(puntero_lista);
+				break;
+			case 3:
+				consultar_bebida(puntero_lista);
+				break;
+			case 4:
+				modificar_bebida(puntero_lista);
+				break;
+			
+			case 6:
+				estado = MENU_PPAL;
+				break;
+			}
 		}
 	}
 }
@@ -131,9 +173,10 @@ int menu_ppal(void) {
 	printf("2- Bebida B\n");
 	printf("3- Bebida C\n");
 	printf("4- Bebida mezclada\n");
-	printf("5- Salir del programa\n");
+	printf("5- Bebidas guardadas\n");
+	printf("6- Salir del programa\n");
 	scanf_s("%d", &opcion);
-	while (opcion < 1 || opcion>5) {
+	while (opcion < 1 || opcion>6) {
 		printf("La opción elegida no es válida. Seleccione una de las opciones.\n");
 		scanf_s("%d", &opcion);
 	}
@@ -164,6 +207,125 @@ int bebida_personalizada(char letra) {
 	printf("Introduzca el porcentaje deseado de la bebida %c:\n", letra);
 	scanf_s("%d", &porcentaje);
 	return porcentaje;
+}
+
+int menu_lista() {
+	int opcion_lista;
+	printf("Menú de lista\n");
+	printf("==============\n");
+	printf("Seleccione una opción\n");
+	printf("1- Ampliar lista\n");
+	printf("2- Visualizar lista\n");
+	printf("3- Consultar bebida\n");
+	printf("4- Modificar bebida guardada\n");
+	printf("5- Eliminar bebida de lista\n");
+	printf("6- Volver al menú principal\n");
+	scanf_s("%d", &opcion_lista);
+	while (opcion_lista < 1 || opcion_lista > 6) {
+		printf("La opción elegida no es válida. Seleccione una de las opciones\n");
+		scanf_s("%d", &opcion_lista);
+	}
+	return opcion_lista;
+}
+int ampliar_lista(lista** bebida_lista) {
+	int error=0;
+	lista* cab=*bebida_lista;
+	lista* bebida;
+	char c;
+	bebida = (lista*)malloc(sizeof(lista));
+	if (bebida == NULL) {
+		printf("No hay memoria disponible\n");
+		error = -1;
+	}
+	else {
+		scanf_s("%c", &c);
+		printf("Introduzca el nombre de la bebida: ");
+		gets_s(bebida->nombre, TAM);
+		do {
+			bebida->bebida_lista.proporcion.A = bebida_personalizada('A');
+			bebida->bebida_lista.proporcion.B = bebida_personalizada('B');
+			bebida->bebida_lista.proporcion.C = bebida_personalizada('C');
+			scanf_s("%c", &c);
+			if (bebida->bebida_lista.proporcion.A + bebida->bebida_lista.proporcion.B + bebida->bebida_lista.proporcion.C != 100) {
+				printf("Los porcentajes introducidos no suman 100, vuelva a introducirlos\n");
+			}
+		} while (bebida->bebida_lista.proporcion.A + bebida->bebida_lista.proporcion.B + bebida->bebida_lista.proporcion.C != 100);
+		bebida->siguiente = cab;
+		cab = bebida;
+	}
+	*bebida_lista = cab;
+	return error;
+ 
+}
+void mostrar_bebidas(lista* bebida) {
+	printf("Nombre: %s\n", bebida->nombre);
+	printf("Porcentaje bebida A: %d. ", bebida->bebida_lista.proporcion.A);
+	printf("Porcentaje bebida B: %d. ", bebida->bebida_lista.proporcion.B);
+	printf("Porcentaje bebida C: %d.\n", bebida->bebida_lista.proporcion.C);
+	return;
+}
+void mostrar_lista(lista** elementos_lista) {
+	lista* bebidas;
+	if (elementos_lista == NULL) {
+		printf("No hay bebidas guardadas\n");
+	}
+	else {
+		printf("Bebidas en la lista y sus porcentajes\n");
+		for (bebidas = elementos_lista; bebidas != NULL; bebidas = (lista*)bebidas->siguiente) {
+			mostrar_bebidas(bebidas);
+		}
+	}
+}
+lista* posicion_bebida(lista* bebida, char nombre[TAM]) {
+	lista* p = bebida;
+	for (p = bebida; p != NULL; p = p->siguiente) {
+		if (strcmp(nombre, p->nombre) == 0) {
+			return p;
+		}
+	}
+	p = NULL;
+	return p;
+}
+void consultar_bebida(lista* bebida) {
+	char c;
+	char nombre[TAM];
+	lista* lista;
+	scanf_s("%c", &c);
+	printf("Introduzca el nombre de la bebida que quiere buscar:\n");
+	gets_s(nombre, TAM);
+	lista = posicion_bebida(bebida, nombre);
+	if (lista == NULL) {
+		printf("No hay ninguna bebida guaradada con ese nombre");
+	}
+	else {
+		mostrar_bebidas(lista);
+	}
+	return;
+}
+void modificar_bebida(lista* bebida) {
+	char nombre[TAM];
+	char c;
+	lista* p;
+	scanf_s("%c", &c);
+	printf("Introduzca el nombre de la bebida a modificar\n");
+	gets_s(nombre, TAM);
+	p = posicion_bebida(bebida, nombre);
+	if (p == NULL) {
+		printf("No hay ninguna bebida guaradada con ese nombre");
+	}
+	else{
+		printf("Vuelva a introducir los procentajes de la bebida %s", bebida->nombre);
+		do {
+			bebida->bebida_lista.proporcion.A = bebida_personalizada('A');
+			bebida->bebida_lista.proporcion.B = bebida_personalizada('B');
+			bebida->bebida_lista.proporcion.C = bebida_personalizada('C');
+			scanf_s("%c", &c);
+			if (bebida->bebida_lista.proporcion.A + bebida->bebida_lista.proporcion.B + bebida->bebida_lista.proporcion.C != 100) {
+				printf("Los porcentajes introducidos no suman 100, vuelva a introducirlos\n");
+			}
+		} while (bebida->bebida_lista.proporcion.A + bebida->bebida_lista.proporcion.B + bebida->bebida_lista.proporcion.C != 100);
+	}
+	return;
 }
 
 //Almacena los tiempos en una cadena de caracteres para enviarsela a arduino
