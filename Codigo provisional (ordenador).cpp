@@ -12,7 +12,7 @@
 #define TAM 50
 
 //Estructuras y tipos de variables
-enum estados { MENU_PPAL, MENU_2, MEZCLA, SALIR };
+enum estados { MENU_PPAL, MENU_2, MEZCLA, SALIR,MENU_LISTA };
 
 typedef struct {
 	int A, B, C;
