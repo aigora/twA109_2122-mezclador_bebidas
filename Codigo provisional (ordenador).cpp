@@ -7,6 +7,9 @@
 
 #define MAX_BUFFER 200
 #define PAUSA_MS 200
+#define SI 1
+#define NO 0
+#define TAM 50
 
 //Estructuras y tipos de variables
 enum estados { MENU_PPAL, MENU_2, MEZCLA, SALIR };
