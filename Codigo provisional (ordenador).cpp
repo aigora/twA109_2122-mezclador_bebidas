@@ -215,7 +215,7 @@ int bebida_personalizada(char letra) {
 	return porcentaje;
 }
 
-int menu_lista() {
+int menu_lista(void) {
 	int opcion_lista;
 	printf("Menú de lista\n");
 	printf("==============\n");
