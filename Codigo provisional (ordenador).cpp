@@ -12,7 +12,7 @@
 #define TAM 50
 
 //Estructuras y tipos de variables
-enum estados { MENU_PPAL, MENU_2, MEZCLA, SALIR,MENU_LISTA };
+enum estados { MENU_PPAL, MENU_2, MEZCLA, SALIR, MENU_LISTA };
 
 typedef struct {
 	int A, B, C;
@@ -22,12 +22,12 @@ typedef struct {
 	unsigned int A, B, C;
 }tiempos;
 
-typedef struct{
+typedef struct {
 	proporciones proporcion;
 	tiempos tiempo;
 }bebidas;
 
-struct Lista_de_bebidas{
+struct Lista_de_bebidas {
 	char nombre[TAM];
 	bebidas bebida_lista;
 	struct Lista_de_bebidas* siguiente;
@@ -36,7 +36,7 @@ typedef struct Lista_de_bebidas lista;
 //Funciones prototipo
 int menu_lista(void);
 int ampliar_lista(lista**);
-void mostrar_bebidas(lista); 
+void mostrar_bebidas(lista);
 lista* posicion_bebida(lista*, char*);
 void consultar_bebida(lista*);
 void mostrar_lista(lista*);
@@ -54,12 +54,13 @@ void mezclar_bebidas(Serial* Arduino, char* port, char* mensaje);
 int main(void) {
 	int opcion, confirmacion;
 	enum estados estado = MENU_PPAL;
-	lista* puntero_lista=NULL;
-	bebidas bebida = {0,0,0,0,0,0};
+	lista* puntero_lista = NULL;
+	bebidas bebida = { 0,0,0,0,0,0};
 	char mensaje_a_enviar[30]; //Cadena que contiene el mensaje a enviar a la placa de Arduino
 	Serial* Arduino; //Variable que representa internamente la placa de Arduino
 	char puerto[] = "COM3"; //A qué puerto se conecta Arduino
-	
+	int resultado;
+
 	setlocale(LC_ALL, "es-ES");
 	Arduino = new Serial((char*)puerto);
 
@@ -134,8 +135,8 @@ int main(void) {
 			bebida.tiempo.A = bebida.proporcion.A * 1000;
 			bebida.tiempo.B = bebida.proporcion.B * 1000;
 			bebida.tiempo.C = bebida.proporcion.C * 1000;
-			encapsular_tiempos(mensaje_a_enviar,bebida);
-			mezclar_bebidas(Arduino,puerto,mensaje_a_enviar);
+			encapsular_tiempos(mensaje_a_enviar, bebida);
+			mezclar_bebidas(Arduino, puerto, mensaje_a_enviar);
 			estado = MENU_PPAL;
 			break;
 		case MENU_LISTA:
@@ -234,8 +235,8 @@ int menu_lista(void) {
 	return opcion_lista;
 }
 int ampliar_lista(lista** bebida_lista) {
-	int error=0;
-	lista* cab=*bebida_lista;
+	int error = 0;
+	lista* cab = *bebida_lista;
 	lista* bebida;
 	char c;
 	bebida = (lista*)malloc(sizeof(lista));
@@ -261,7 +262,7 @@ int ampliar_lista(lista** bebida_lista) {
 	}
 	*bebida_lista = cab;
 	return error;
- 
+
 }
 void mostrar_bebidas(lista* bebida) {
 	printf("Nombre: %s\n", bebida->nombre);
@@ -282,7 +283,7 @@ void mostrar_lista(lista* elementos_lista) {
 		}
 	}
 }
-lista* posicion_bebida(lista* bebida, char nombre[TAM]) {
+lista* posicion_bebida(lista* bebida, char* nombre) {
 	lista* p = bebida;
 	for (p = bebida; p != NULL; p = p->siguiente) {
 		if (strcmp(nombre, p->nombre) == 0) {
@@ -319,7 +320,7 @@ void modificar_bebida(lista* bebida) {
 	if (p == NULL) {
 		printf("No hay ninguna bebida guaradada con ese nombre");
 	}
-	else{
+	else {
 		printf("Vuelva a introducir los procentajes de la bebida %s", bebida->nombre);
 		do {
 			bebida->bebida_lista.proporcion.A = bebida_personalizada('A');
@@ -338,7 +339,7 @@ void eliminar_bebida(lista** bebida)
 {
 	char nombre[TAM], respuesta[2];
 	int encontrado = NO;
-	lista *plista,*p;
+	lista* plista, * p;
 
 	if (*bebida == NULL)
 		printf("No hay bebidas guardadas\n");
@@ -347,7 +348,7 @@ void eliminar_bebida(lista** bebida)
 		printf("Introduzca nombre de la bebida a eliminar:\n");
 		gets_s(nombre, TAM);
 		plista = *bebida;
-		for (p =plista; p!=NULL&&encontrado==0; p=p->siguiente)
+		for (p = plista; p != NULL && encontrado == 0; p = p->siguiente)
 		{
 			if (strcmp(nombre, p->nombre) == 0)
 			{
@@ -358,7 +359,7 @@ void eliminar_bebida(lista** bebida)
 				if (strcmp(respuesta, "Si") == 0 || strcmp(respuesta, "si") == 0 || strcmp(respuesta, "SI") == 0)
 				{
 					encontrado = SI;
-					if(p==plista){
+					if (p == plista) {
 						*bebida = p->siguiente;
 					}
 					else {
@@ -386,37 +387,37 @@ void encapsular_tiempos(char* mensaje_final, bebidas bebida) {
 
 	//Almacenamos el primer tiempo
 	entero_a_cadena(bebida.tiempo.A, cadena);
-	strcpy_s(mensaje_final,30, cadena);
+	strcpy_s(mensaje_final, 30, cadena);
 
 	//Almacenamos el segundo
 	entero_a_cadena(bebida.tiempo.B, cadena);
-	strcat_s(mensaje_final,30,"B");
-	strcat_s(mensaje_final,30, cadena);
+	strcat_s(mensaje_final, 30, "B");
+	strcat_s(mensaje_final, 30, cadena);
 
 	//Almacenamos el ultimo
 	entero_a_cadena(bebida.tiempo.C, cadena);
-	strcat_s(mensaje_final,30, "C");
-	strcat_s(mensaje_final,30, cadena);
+	strcat_s(mensaje_final, 30, "C");
+	strcat_s(mensaje_final, 30, cadena);
 
 	//Añadimos un \n, la condicion de parada de Arduino
-	strcat_s(mensaje_final,30, "\n");
+	strcat_s(mensaje_final, 30, "\n");
 }
 
 //Combierte los tiempos en cadenas de caracteres
 void entero_a_cadena(unsigned int numero, char* cadena) {
 	int digito = 0;
-	int i,j=0,k=0;
+	int i, j = 0, k = 0;
 	char cadena_aux[10];
 
 	for (i = 0; i < 10; i++) {
 		cadena[i] = '0';
 	}
 	for (i = 1; numero != 0; i *= 10) {
-		do{
+		do {
 			digito++;
 			numero -= i;
-		}while(numero % (i*10) != 0);
-		if (cadena[j] + digito == '0'+10) {
+		} while (numero % (i * 10) != 0);
+		if (cadena[j] + digito == '0' + 10) {
 			cadena[j + 1] = '1';
 			cadena[j] = '0';
 		}
@@ -436,12 +437,12 @@ void entero_a_cadena(unsigned int numero, char* cadena) {
 
 // Mandar a Arduino comenzar la mezcla
 void mezclar_bebidas(Serial* Arduino, char* port, char* mensaje)
-{	
+{
 	int completado;
 	int recibo_primer_mensaje = 0;
 	if (Arduino->IsConnected())
-	{	
-		completado = actualizar_informacion(Arduino,mensaje, recibo_primer_mensaje);
+	{
+		completado = actualizar_informacion(Arduino, mensaje, recibo_primer_mensaje);
 		mensaje = (char*)"\0";
 		recibo_primer_mensaje++;
 		while (completado != 1) {
@@ -455,9 +456,9 @@ void mezclar_bebidas(Serial* Arduino, char* port, char* mensaje)
 	printf("\n");
 }
 
-int actualizar_informacion(Serial* Arduino,char* mensaje_enviar, int recibo_primer_mensaje)
+int actualizar_informacion(Serial* Arduino, char* mensaje_enviar, int recibo_primer_mensaje)
 {
-	int completado  = 0;
+	int completado = 0;
 	int bytesRecibidos;
 	char mensaje_recibido[MAX_BUFFER];
 
@@ -466,8 +467,8 @@ int actualizar_informacion(Serial* Arduino,char* mensaje_enviar, int recibo_prim
 	{
 		printf("No se ha recibido respuesta\n");
 	}
-	else if(bytesRecibidos > 0)
-	{	
+	else if (bytesRecibidos > 0)
+	{
 		printf("\n%s", mensaje_recibido);
 		if (strstr(mensaje_recibido, "MEZCLA FINALIZADA") != NULL) {
 			completado = 1;
