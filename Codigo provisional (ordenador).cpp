@@ -38,7 +38,7 @@ lista* posicion_bebida(lista*, char*);
 void consultar_bebida(lista*);
 void mostrar_lista(lista*);
 void modificar_bebida(lista*);
-int eliminar_bebida(lista*,int);
+void eliminar_bebida(lista*);
 int menu_ppal(void);
 int menu2(void);
 int bebida_personalizada(char);
@@ -156,7 +156,9 @@ int main(void) {
 			case 4:
 				modificar_bebida(puntero_lista);
 				break;
-			
+			case 5:
+				eliminar_bebida(puntero_lista);
+				break;
 			case 6:
 				estado = MENU_PPAL;
 				break;
@@ -329,41 +331,50 @@ void modificar_bebida(lista* bebida) {
 	return;
 }
 
-int eliminar_bebida(lista* lista, int *plista)
+void eliminar_bebida(lista** bebida)
 {
-    char nombre[TAM], respuesta[2];
-    int encontrado = NO;
-    int i,j;
-    int lista=*plista;
-    
-    if(lista==0)
-        printf("No hay bebidas guardadas\n");
-    else
-    {
-        printf("Introduzca nombre de la bebida a eliminar:\n");
-        gets_s(nombre, TAM);
-        for(i=0;i<lista && encontrad==NO; i++)
-        {
-            if(strcmp(nombre, lista[i].nombre)==0)
-            {
-                printf("Datos de la bebida encontrados:\n");
-                mostrar_lista(lista[i]);
-                printf("¿Desea borrar esta bebida? (SI/NO):\n");
-                gets_s(respuesta,2);
-                if(strcmp(respuesta,"Si")==0||strcmp(respuesta,"si")==0||strcmp(respuesta,"SI")==0)
-                {
-                    encontrado=SI;
-                    for(j=i;j<n-1;j++)
-                        lista[j]=lista[j+1];
-                    *plista=n-1;
-                }
-            }
-        }
-        if(encontrado==NO)
-            printf("No se ha eliminado el usuario\n");
-    }
-    
-    return encontrado;
+	char nombre[TAM], respuesta[2];
+	int encontrado = NO;
+	lista *plista,*p;
+
+	if (*bebida == NULL)
+		printf("No hay bebidas guardadas\n");
+	else
+	{
+		printf("Introduzca nombre de la bebida a eliminar:\n");
+		gets_s(nombre, TAM);
+		plista = *bebida;
+		for (p =plista; p!=NULL&&encontrado==0; p=p->siguiente)
+		{
+			if (strcmp(nombre, p->nombre) == 0)
+			{
+				printf("Datos de la bebida encontrados:\n");
+				mostrar_lista(p);
+				printf("¿Desea borrar esta bebida? (SI/NO):\n");
+				gets_s(respuesta, 2);
+				if (strcmp(respuesta, "Si") == 0 || strcmp(respuesta, "si") == 0 || strcmp(respuesta, "SI") == 0)
+				{
+					encontrado = SI;
+					if(p==plista){
+						*bebida = p->siguiente;
+					}
+					else {
+						plista->siguiente = p->siguiente;
+					}
+					free(p);
+					break;
+				}
+			}
+			else {
+				if (p != plista)
+					plista = plista->siguiente;
+			}
+		}
+		if (encontrado == NO)
+			printf("No se ha eliminado el usuario\n");
+	}
+
+	return;
 }
 
 //Almacena los tiempos en una cadena de caracteres para enviarsela a arduino
