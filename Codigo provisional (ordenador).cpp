@@ -41,7 +41,7 @@ lista* posicion_bebida(lista*, char*);
 void consultar_bebida(lista*);
 void mostrar_lista(lista*);
 void modificar_bebida(lista*);
-void eliminar_bebida(lista*);
+void eliminar_bebida(lista**);
 int menu_ppal(void);
 int menu2(void);
 int bebida_personalizada(char);
@@ -55,7 +55,7 @@ int main(void) {
 	int opcion, confirmacion;
 	enum estados estado = MENU_PPAL;
 	lista* puntero_lista=NULL;
-	bebidas bebida = {0,0,0,0,0,0,NULL};
+	bebidas bebida = {0,0,0,0,0,0};
 	char mensaje_a_enviar[30]; //Cadena que contiene el mensaje a enviar a la placa de Arduino
 	Serial* Arduino; //Variable que representa internamente la placa de Arduino
 	char puerto[] = "COM3"; //A qué puerto se conecta Arduino
@@ -160,7 +160,7 @@ int main(void) {
 				modificar_bebida(puntero_lista);
 				break;
 			case 5:
-				eliminar_bebida(puntero_lista);
+				eliminar_bebida(&puntero_lista);
 				break;
 			case 6:
 				estado = MENU_PPAL;
@@ -270,7 +270,7 @@ void mostrar_bebidas(lista* bebida) {
 	printf("Porcentaje bebida C: %d.\n", bebida->bebida_lista.proporcion.C);
 	return;
 }
-void mostrar_lista(lista** elementos_lista) {
+void mostrar_lista(lista* elementos_lista) {
 	lista* bebidas;
 	if (elementos_lista == NULL) {
 		printf("No hay bebidas guardadas\n");
@@ -477,7 +477,7 @@ int actualizar_informacion(Serial* Arduino,char* mensaje_enviar, int recibo_prim
 }
 
 //Envia y recibe un mensaje a arduino
-int Enviar_y_recibir(Serial* Arduino,const char* mensaje_enviar, char* mensaje_recibir)
+int Enviar_y_recibir(Serial* Arduino,char* mensaje_enviar, char* mensaje_recibir)
 {
 	int bytes_recibidos = 0, total = 0;
 	int intentos = 0, fin_linea = 0;
