@@ -7,6 +7,8 @@
 
 #define MAX_BUFFER 200
 #define PAUSA_MS 200
+#define TAM_N 10
+#define TAM_M 30
 #define SI 1
 #define NO 0
 #define TAM 50
@@ -35,13 +37,13 @@ struct Lista_de_bebidas {
 typedef struct Lista_de_bebidas lista;
 //Funciones prototipo
 int menu_lista(void);
-int ampliar_lista(lista**);
+int ampliar_lista(lista**,int* numero_de_elementos);
 void mostrar_bebidas(lista);
 lista* posicion_bebida(lista*, char*);
 void consultar_bebida(lista*);
 void mostrar_lista(lista*);
 void modificar_bebida(lista*);
-void eliminar_bebida(lista**);
+void eliminar_bebida(lista**,int* numero_de_elementos);
 int menu_ppal(void);
 int menu2(void);
 int bebida_personalizada(char);
@@ -50,6 +52,8 @@ void encapsular_tiempos(char* mensaje_final, bebidas bebida);
 void entero_a_cadena(unsigned int numero, char* cadena);
 int actualizar_informacion(Serial* Arduino, char* mensaje_enviar, int recibo_primer_mensaje);
 void mezclar_bebidas(Serial* Arduino, char* port, char* mensaje);
+lista* leer_fichero(int* numero_de_elementos);
+void guardar_en_fichero(lista*,int nuemero_de_elementos);
 
 int main(void) {
 	int opcion, confirmacion;
@@ -60,9 +64,11 @@ int main(void) {
 	Serial* Arduino; //Variable que representa internamente la placa de Arduino
 	char puerto[] = "COM3"; //A qué puerto se conecta Arduino
 	int resultado;
+	int numero_de_elementos = 0; //Numero de elementos que contiene la lista
 
 	setlocale(LC_ALL, "es-ES");
 	Arduino = new Serial((char*)puerto);
+	puntero_lista = leer_fichero(&numero_de_elementos);
 
 	while (estado != SALIR) {
 		switch (estado) {
@@ -89,6 +95,7 @@ int main(void) {
 				break;
 			case 6:
 				estado = SALIR;
+				guardar_en_fichero(puntero_lista,numero_de_elementos);
 				break;
 			}
 			break;
@@ -143,7 +150,7 @@ int main(void) {
 			opcion = menu_lista();
 			switch (opcion) {
 			case 1:
-				resultado = ampliar_lista(&puntero_lista);
+				resultado = ampliar_lista(&puntero_lista,&numero_de_elementos);
 				if (resultado == 0) {
 					printf("Se ha añadido correctamente la bebida");
 				}
@@ -161,7 +168,7 @@ int main(void) {
 				modificar_bebida(puntero_lista);
 				break;
 			case 5:
-				eliminar_bebida(&puntero_lista);
+				eliminar_bebida(&puntero_lista,&numero_de_elementos);
 				break;
 			case 6:
 				estado = MENU_PPAL;
@@ -234,7 +241,7 @@ int menu_lista(void) {
 	}
 	return opcion_lista;
 }
-int ampliar_lista(lista** bebida_lista) {
+int ampliar_lista(lista** bebida_lista,int* n) {
 	int error = 0;
 	lista* cab = *bebida_lista;
 	lista* bebida;
@@ -261,6 +268,7 @@ int ampliar_lista(lista** bebida_lista) {
 		cab = bebida;
 	}
 	*bebida_lista = cab;
+	n++;
 	return error;
 
 }
@@ -335,7 +343,7 @@ void modificar_bebida(lista* bebida) {
 	return;
 }
 
-void eliminar_bebida(lista** bebida)
+void eliminar_bebida(lista** bebida,int* n)
 {
 	char nombre[TAM], respuesta[2];
 	int encontrado = NO;
@@ -366,6 +374,7 @@ void eliminar_bebida(lista** bebida)
 						plista->siguiente = p->siguiente;
 					}
 					free(p);
+					n--;
 					break;
 				}
 			}
@@ -504,4 +513,60 @@ int Enviar_y_recibir(Serial* Arduino,char* mensaje_enviar, char* mensaje_recibir
 		mensaje_recibir[total - 1] = '\0';
 
 	return total;
+}
+
+lista* leer_fichero(int* n) {
+	FILE* fichero;
+	errno_t err;
+	lista* p, * cab = NULL;
+	int i;
+	char intro,*pos;
+
+	err = fopen_s(&fichero, "Bebidas.txt", "rt");
+	if (err == 0) // Si el fichero se ha podido abrir
+	{	
+		fscanf_s(fichero, "%d", n);
+		fscanf_s(fichero, "%c", &intro);
+		for (i = 0; i < *n;i++) {
+			p = (lista*)malloc(sizeof(lista));
+			if (p != NULL) {
+				fgets(p->nombre,TAM, fichero);
+				pos = strchr(p->nombre,'\n');
+				*pos = '\0';
+				fscanf_s(fichero, "%d %d %d", &p->bebida_lista.proporcion.A, &p->bebida_lista.proporcion.B, &p->bebida_lista.proporcion.C);
+				fscanf_s(fichero, "%c", &intro);
+				p->siguiente = cab;
+				cab = p;
+			}
+			else {
+				printf("Memoria insuficiente para leer el fichero");
+			}
+		}
+		fclose(fichero);
+	}
+	else {
+		printf("Se ha producido un al abrir el fichero.\n");
+	}
+	return cab;
+}
+
+void guardar_en_fichero(lista* lista_a_almacenar,int n) {
+	FILE* fichero;
+	errno_t err;
+
+	err = fopen_s(&fichero, "Bebidas.txt", "wt");
+	if (err == 0) // Si el fichero se ha podido crear
+	{
+		fprintf(fichero, "%d\n", n);
+		while (lista_a_almacenar != NULL)
+		{
+			fprintf(fichero,"%s\n", lista_a_almacenar->nombre);
+			fprintf(fichero,"%d %d %d\n",lista_a_almacenar->bebida_lista.proporcion.A, lista_a_almacenar->bebida_lista.proporcion.B, lista_a_almacenar->bebida_lista.proporcion.C);
+			lista_a_almacenar = lista_a_almacenar->siguiente;
+		}
+		fclose(fichero);
+	}
+	else {
+		printf("Se ha producido un problema a la hora de grabar el fichero de usuarios\n");
+	}
 }
