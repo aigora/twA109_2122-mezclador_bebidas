@@ -1,7 +1,7 @@
 //Declaramos las constantes de los pin:
 const int pinFinalCarrera = 2; //Pin Digital
 const int pinLED_R = 9, pinLED_G = 10, pinLED_B = 11; //Pin digital PWM
-const int pinValvulaA = 3, pinValvulaB = 4, pinValvulaC = 5; //Pin digitales (En realidad van a los respectivos relés)
+const int pinValvulaA = 4, pinValvulaB = 3, pinValvulaC = 5; //Pin digitales (En realidad van a los respectivos relés)
 
 //Emplearemos una máquina de estados que mida si el vaso está presente o no:
 enum estados {sin_vaso, con_vaso};
@@ -30,6 +30,12 @@ void setup() {
   //Para las primeras pruebas, daremos unos valores fijos a los tiempos
   tiempoA = tiempoB = tiempoC = 10000; //BORRAR MÁS ADELANTE
 
+
+  digitalWrite(pinValvulaA,HIGH);
+  digitalWrite(pinValvulaB,HIGH);
+  digitalWrite(pinValvulaC,HIGH);
+  
+  
   //Emplearemos el monitor en serie para realizar pruebas durante el desarrollo del programa (mostrar errores, estado, o valores de variables)
   Serial.begin(9600);
 }
@@ -49,15 +55,46 @@ void mezclar_bebida(const int pinValvula, unsigned long tiempoValvula) {
   //Emplearemos un while con nuestros tiempos como condición, así también aseguramos no cerrar
   while (tiempo_f < tiempoValvula) {
     FinalCarrera = digitalRead(pinFinalCarrera);
+
+
+///////////////////////////////
+ // read the state of the switch/button:
+  currentState = FinalCarrera;
+
+  // check to see if you just pressed the button
+  // (i.e. the input went from LOW to HIGH), and you've waited long enough
+  // since the last press to ignore any noise:
+
+  // If the switch/button changed, due to noise or pressing:
+  if (currentState != lastFlickerableState) {
+    // reset the debouncing timer
+    lastDebounceTime = millis();
+    // save the the last flickerable state
+    lastFlickerableState = currentState;
+  }
+
+  if ((millis() - lastDebounceTime) > DEBOUNCE_DELAY) {
+    // whatever the reading is at, it's been there for longer than the debounce
+    // delay, so take it as the actual current state:
+
+    // save the the last steady state
+    lastSteadyState = currentState;
+  }
+
+FinalCarrera=lastSteadyState;
+
+/////////////////////////////////
+
     temporizador = millis(); //Actualizamos el tiempo del temporizador
     
+
     //Maquina de estados para decidir si va abierto o cerrado.
     switch (estado) {
       case sin_vaso:
         if (FinalCarrera == 1) {
           estado = con_vaso;
           Serial.println("Continuando proceso de mezclado");
-          digitalWrite(pinValvula, HIGH);
+          digitalWrite(pinValvula, LOW);
           //Actualizamos el tiempo en funcionamiento, igual a el tiempo que ya ha estado funcionado, más el tiempo que ha pasado desde la última vez que se actualizó (milisegundos).
           tiempo_f = tiempo_f + (temporizador - tiempo_a);
           tiempo_a = temporizador;
@@ -69,20 +106,20 @@ void mezclar_bebida(const int pinValvula, unsigned long tiempoValvula) {
       case con_vaso:
         if (FinalCarrera == 0) {
           estado = sin_vaso;
-          digitalWrite(pinValvula, LOW);
+          digitalWrite(pinValvula, HIGH);
           Serial.println("Error: No se detecta vaso.");
           Serial.println("Por favor, vuelva a introducir el vaso para continuar.");
           tiempo_a = temporizador;
         }
         else {
-          digitalWrite(pinValvula, HIGH);
+          digitalWrite(pinValvula, LOW);
           //Actualizamos el tiempo en funcionamiento, igual a el tiempo que ya ha estado funcionado, más el tiempo que ha pasado desde la última vez que se actualizó (milisegundos).
           tiempo_f = tiempo_f + (temporizador - tiempo_a);
           tiempo_a = temporizador;
         }
     }
   }
-  digitalWrite(pinValvula,LOW);
+  digitalWrite(pinValvula,HIGH);
 }
 
 
@@ -115,4 +152,6 @@ void loop() {
     Serial.println("Fin tercera valvula");
     tiempoC = 0;
   }
+  
+  //delay(200);
 }
