@@ -1,0 +1,146 @@
+//Declaramos las constantes de los pin:
+const int pinFinalCarrera = 2; //Pin Digital
+const int pinValvulaA = 4, pinValvulaB = 3, pinValvulaC = 5; //Pin digitales (En realidad van a los respectivos relés)
+
+//Emplearemos una máquina de estados que mida si el vaso está presente o no:
+enum estados {sin_vaso, con_vaso};
+//Declaramos las variables que usaremos en el programa:
+//Variables que utilizaremos como temporizador (al tratarse de un tiempo nunca dara valores negativos)
+unsigned long temporizador;
+unsigned long tiempoA, tiempoB, tiempoC; //Tiempo que debe estar abierta cada valvula (al tratarse de un tiempo nunca dara valores negativos)
+void setup() {
+  //Definimos como funcionara cada pin
+  
+  //Final de Carrera
+  pinMode(pinFinalCarrera, INPUT);
+  
+  //Relés de las valvulas
+  pinMode(pinValvulaA, OUTPUT);
+  pinMode(pinValvulaB, OUTPUT);
+  pinMode(pinValvulaC, OUTPUT);
+  
+  //Damos a los tiempos unos valores iniciales de 0
+  tiempoA = tiempoB = tiempoC = 0;
+
+  digitalWrite(pinValvulaA,HIGH);
+  digitalWrite(pinValvulaB,HIGH);
+  digitalWrite(pinValvulaC,HIGH);
+
+
+  //Emplearemos el monitor en serie para realizar pruebas durante el desarrollo del programa (mostrar errores, estado, o valores de variables)
+  Serial.begin(9600);
+}
+//Dado que repetiremos la misma cadena de acciones tres veces, definiremos una función para representarla
+void mezclar_bebida(const int pinValvula, unsigned long tiempoValvula) {
+  
+  //Definimos variables locales
+  //Empezamos por dos variables que midan el tiempo que lleva abierta la valvula, y el tiempo total registrado en la última actualización de tiempos:
+  unsigned long tiempo_f = 0, tiempo_a = millis();
+  
+  //Continuamos con la variable para comprobar el estado del botón y la máquina de estados
+  int FinalCarrera = 0; //Valor entre 0 y 1 que da el final de carrera
+  estados estado = con_vaso; //Estado para la máquina de estados
+  
+  //Emplearemos un while con nuestros tiempos como condición
+  while (tiempo_f < tiempoValvula) {
+    FinalCarrera = digitalRead(pinFinalCarrera);
+    
+    //Para evitar problemas de rebotes al encender o apagar los relés, nos aseguraremos de que los cambios del pulsador no sean accidentales
+    ///////////////////////////////
+    // read the state of the switch/button:
+    currentState = FinalCarrera;
+
+    // check to see if you just pressed the button
+    // (i.e. the input went from LOW to HIGH), and you've waited long enough
+    // since the last press to ignore any noise:
+
+    // If the switch/button changed, due to noise or pressing:
+    if (currentState != lastFlickerableState) {
+      // reset the debouncing timer
+      lastDebounceTime = millis();
+      // save the the last flickerable state
+      lastFlickerableState = currentState;
+    }
+
+    if ((millis() - lastDebounceTime) > DEBOUNCE_DELAY) {
+      // whatever the reading is at, it's been there for longer than the debounce
+      // delay, so take it as the actual current state:
+
+      // save the the last steady state
+      lastSteadyState = currentState;
+    }
+
+    FinalCarrera=lastSteadyState;
+
+    /////////////////////////////////
+
+    temporizador = millis(); //Actualizamos el tiempo del temporizador
+
+
+    //Maquina de estados para decidir si va abierto o cerrado.
+    switch (estado) {
+      case sin_vaso:
+        if (FinalCarrera == 1) {
+          estado = con_vaso;
+          Serial.println("Continuando proceso de mezclado");
+          digitalWrite(pinValvula, LOW);
+          //Actualizamos el tiempo en funcionamiento, igual a el tiempo que ya ha estado funcionado, más el tiempo que ha pasado desde la última vez que se actualizó (milisegundos).
+          tiempo_f = tiempo_f + (temporizador - tiempo_a);
+          tiempo_a = temporizador;
+        }
+        else{
+          tiempo_a = temporizador;
+        }
+        break;
+      case con_vaso:
+        if (FinalCarrera == 0) {
+          estado = sin_vaso;
+          digitalWrite(pinValvula, HIGH);
+          Serial.println("Error: No se detecta vaso.");
+          Serial.println("Por favor, vuelva a introducir el vaso para continuar.");
+          tiempo_a = temporizador;
+        }
+        else {
+          digitalWrite(pinValvula, LOW);
+          //Actualizamos el tiempo en funcionamiento, igual a el tiempo que ya ha estado funcionado, más el tiempo que ha pasado desde la última vez que se actualizó (milisegundos).
+          tiempo_f = tiempo_f + (temporizador - tiempo_a);
+          tiempo_a = temporizador;
+        }
+    }
+  }
+  digitalWrite(pinValvula,HIGH);
+}
+
+
+void loop() {
+  if(Serial.available()>0){
+    String mensaje_finaldecarrera = Serial.readStringUntil('\n');
+    int FinalCarrera;
+    FinalCarrera=digitalRead(pinFinalCarrera);
+    if(mensaje_finaldecarrera.compareTo("GET_DETECTA")==0&&FinalCarrera==1){
+        mensaje_finaldecarrera="Hay vaso";
+        Serial.print(mensaje_finaldecarrera);
+    }
+  }
+  //Empleando la función definida anteriormente, hacemos funcionar las tres valvulas:
+  if (tiempoA > 0) {
+    Serial.println("Abriendo primera valvula:");
+    mezclar_bebida(pinValvulaA, tiempoA);
+    Serial.println("Fin primera valvula, pasando a la siguiente");
+    tiempoA = 0;
+  }
+  if (tiempoB > 0) {
+    Serial.println("Abriendo segunda valvula:");
+    mezclar_bebida(pinValvulaB, tiempoB);
+    Serial.println("Fin segunda valvula, pasando a la siguiente");
+    tiempoB = 0;
+  }
+  if (tiempoC > 0) {
+    Serial.println("Abriendo tercera valvula:");
+    mezclar_bebida(pinValvulaC, tiempoC);
+    Serial.println("Fin tercera valvula");
+    tiempoC = 0;
+  }
+  Serial.println("MEZCLA FINALIZADA");
+
+}
