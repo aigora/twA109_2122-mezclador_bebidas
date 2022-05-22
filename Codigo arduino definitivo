@@ -115,12 +115,27 @@ void mezclar_bebida(const int pinValvula, unsigned long tiempoValvula) {
   digitalWrite(pinValvula,HIGH);
 }
 
+//Necesitamos tambien una funcion que permita obtener los tiempos de la cadena que los contiene
+void extraer_tiempo(String mensaje, unsigned long* tiempo){
+  int i;
+  for(i=0;mensaje[i]!='\0';i++){
+    if(mensaje[i]>='0' && mensaje[i]<='9'){
+      *tiempo = ((*tiempo)*10)+(mensaje[i]-'0');
+    }
+  }
+}
 
 void loop() {
   if(Serial.available()>0){
-    String mensaje_finaldecarrera = Serial.readStringUntil('\n');
-    int FinalCarrera;
-    FinalCarrera=digitalRead(pinFinalCarrera);
+  
+    //Leemos los tiempos
+    String mensaje_ordenador = Serial.readStringUntil('B');
+    extraer_tiempo(mensaje_ordenador, &(tiempo.A));
+    mensaje_ordenador = Serial.readStringUntil('C');
+    extraer_tiempo(mensaje_ordenador, &(tiempo.B));
+    mensaje_ordenador = Serial.readStringUntil('\n');
+    extraer_tiempo(mensaje_ordenador, &(tiempo.C));
+    
     if(mensaje_finaldecarrera.compareTo("GET_DETECTA")==0&&FinalCarrera==1){
         mensaje_finaldecarrera="Hay vaso";
         Serial.print(mensaje_finaldecarrera);
