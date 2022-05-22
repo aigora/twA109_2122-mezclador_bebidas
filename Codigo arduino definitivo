@@ -7,7 +7,10 @@ enum estados {sin_vaso, con_vaso};
 //Declaramos las variables que usaremos en el programa:
 //Variables que utilizaremos como temporizador (al tratarse de un tiempo nunca dara valores negativos)
 unsigned long temporizador;
-unsigned long tiempoA, tiempoB, tiempoC; //Tiempo que debe estar abierta cada valvula (al tratarse de un tiempo nunca dara valores negativos)
+
+typedef struct{
+  unsigned long A, B, C; //Tiempo que debe estar abierta cada valvula (al tratarse de un tiempo nunca dara valores negativos)
+} Tiempos;
 
 
 void setup() {
