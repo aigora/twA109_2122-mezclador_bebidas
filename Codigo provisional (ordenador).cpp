@@ -139,9 +139,9 @@ int main(void) {
 				break;
 			}
 		case MEZCLA:
-			bebida.tiempo.A = bebida.proporcion.A * 1000;
-			bebida.tiempo.B = bebida.proporcion.B * 1000;
-			bebida.tiempo.C = bebida.proporcion.C * 1000;
+			bebida.tiempo.A = bebida.proporcion.A * 500;
+			bebida.tiempo.B = bebida.proporcion.B * 500;
+			bebida.tiempo.C = bebida.proporcion.C * 500;
 			encapsular_tiempos(mensaje_a_enviar, bebida);
 			mezclar_bebidas(Arduino, puerto, mensaje_a_enviar);
 			estado = MENU_PPAL;
