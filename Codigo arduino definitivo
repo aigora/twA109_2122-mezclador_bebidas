@@ -135,11 +135,6 @@ void loop() {
     extraer_tiempo(mensaje_ordenador, &(tiempo.B));
     mensaje_ordenador = Serial.readStringUntil('\n');
     extraer_tiempo(mensaje_ordenador, &(tiempo.C));
-    
-    if(mensaje_finaldecarrera.compareTo("GET_DETECTA")==0&&FinalCarrera==1){
-        mensaje_finaldecarrera="Hay vaso";
-        Serial.print(mensaje_finaldecarrera);
-    }
 
     //Empleando la función definida anteriormente, hacemos funcionar las tres valvulas:
     if (tiempoA > 0) {
