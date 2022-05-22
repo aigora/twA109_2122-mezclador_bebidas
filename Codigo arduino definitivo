@@ -133,11 +133,11 @@ void loop() {
   
     //Leemos los tiempos
     String mensaje_ordenador = Serial.readStringUntil('B');
-    extraer_tiempo(mensaje_ordenador, &(tiempo.A));
+    extraer_tiempo(mensaje_ordenador, &(tiempoA));
     mensaje_ordenador = Serial.readStringUntil('C');
-    extraer_tiempo(mensaje_ordenador, &(tiempo.B));
+    extraer_tiempo(mensaje_ordenador, &(tiempoB));
     mensaje_ordenador = Serial.readStringUntil('\n');
-    extraer_tiempo(mensaje_ordenador, &(tiempo.C));
+    extraer_tiempo(mensaje_ordenador, &(tiempoC));
 
     //Empleando la función definida anteriormente, hacemos funcionar las tres valvulas:
     if (tiempoA > 0) {
