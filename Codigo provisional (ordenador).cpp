@@ -204,8 +204,8 @@ int menu2(void) {
 	printf("==============\n");
 	printf("Seleccione una opción\n");
 	printf("1- Mitad de Bebida A y mitad de Bebida B\n");
-	printf("2- Mitad de Bebida B y mitad de Bebida C\n");
-	printf("3- Mitad de Bebida C y mitad de Bebida A\n");
+	printf("2- Mitad de Bebida A y mitad de Bebida C\n");
+	printf("3- Mitad de Bebida C y mitad de Bebida B\n");
 	printf("4- Bebida personalizada\n");
 	printf("5- Volver al menú principal\n");
 	scanf_s("%d", &opcion2);
