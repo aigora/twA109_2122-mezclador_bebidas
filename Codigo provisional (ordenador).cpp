@@ -268,7 +268,7 @@ int ampliar_lista(lista** bebida_lista,int* n) {
 		cab = bebida;
 	}
 	*bebida_lista = cab;
-	n++;
+	(*n)++;
 	return error;
 
 }
@@ -374,7 +374,7 @@ void eliminar_bebida(lista** bebida,int* n)
 						plista->siguiente = p->siguiente;
 					}
 					free(p);
-					n--;
+					(*n)--;
 					break;
 				}
 			}
