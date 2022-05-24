@@ -152,10 +152,10 @@ int main(void) {
 			case 1:
 				resultado = ampliar_lista(&puntero_lista,&numero_de_elementos);
 				if (resultado == 0) {
-					printf("Se ha añadido correctamente la bebida");
+					printf("Se ha añadido correctamente la bebida\n");
 				}
 				else {
-					printf("No se ha añadido correctamnete la bebida");
+					printf("No se ha añadido correctamnete la bebida\n");
 				}
 				break;
 			case 2:
