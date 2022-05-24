@@ -345,7 +345,7 @@ void modificar_bebida(lista* bebida) {
 
 void eliminar_bebida(lista** bebida,int* n)
 {
-	char nombre[TAM], respuesta[2];
+	char nombre[TAM], respuesta[2],intro;
 	int encontrado = NO;
 	lista* plista, * p;
 
@@ -354,6 +354,7 @@ void eliminar_bebida(lista** bebida,int* n)
 	else
 	{
 		printf("Introduzca nombre de la bebida a eliminar:\n");
+		scanf_s("%c",&intro);//Limpiamos buffer
 		gets_s(nombre, TAM);
 		plista = *bebida;
 		for (p = plista; p != NULL && encontrado == 0; p = p->siguiente)
