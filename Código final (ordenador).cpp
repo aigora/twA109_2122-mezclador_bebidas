@@ -326,10 +326,10 @@ void modificar_bebida(lista* bebida) {
 	gets_s(nombre, TAM);
 	p = posicion_bebida(bebida, nombre);
 	if (p == NULL) {
-		printf("No hay ninguna bebida guaradada con ese nombre");
+		printf("No hay ninguna bebida guaradada con ese nombre\n");
 	}
 	else {
-		printf("Vuelva a introducir los procentajes de la bebida %s", bebida->nombre);
+		printf("Vuelva a introducir los procentajes de la bebida %s\n", bebida->nombre);
 		do {
 			bebida->bebida_lista.proporcion.A = bebida_personalizada('A');
 			bebida->bebida_lista.proporcion.B = bebida_personalizada('B');
@@ -345,7 +345,7 @@ void modificar_bebida(lista* bebida) {
 
 void eliminar_bebida(lista** bebida,int* n)
 {
-	char nombre[TAM], respuesta[2],intro;
+	char nombre[TAM], respuesta[3],intro;
 	int encontrado = NO;
 	lista* plista, * p;
 
