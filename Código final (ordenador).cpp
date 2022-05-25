@@ -364,7 +364,7 @@ void eliminar_bebida(lista** bebida,int* n)
 				printf("Datos de la bebida encontrados:\n");
 				mostrar_lista(p);
 				printf("¿Desea borrar esta bebida? (SI/NO):\n");
-				gets_s(respuesta, 2);
+				gets_s(respuesta, 3);
 				if (strcmp(respuesta, "Si") == 0 || strcmp(respuesta, "si") == 0 || strcmp(respuesta, "SI") == 0)
 				{
 					encontrado = SI;
